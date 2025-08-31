@@ -10,6 +10,7 @@
 (require 'use-package)
 (setq use-package-always-ensure t)
 
+(set-face-attribute 'default nil :font "Mononoki Nerd Font" :height 120)
 
 (setq make-backup-files nil)
 (setq auto-save-default nil)
@@ -23,10 +24,13 @@
 (electric-pair-mode 1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
-(scroll-bar-mode -1)
+(scroll-bar-mode 0)
+(setq frame-resize-pixelwise t)
+(setq window-resize-pixelwise t)
 (global-display-line-numbers-mode 1)
 (global-visual-line-mode t)
 (global-hl-line-mode t)
+(add-to-list 'default-frame-alist '(internal-border-width . 10))
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (load custom-file 'noerror)
 
@@ -67,4 +71,18 @@
 	     :config
 	     (setq evil-collection-mode-list '(dashboard dired ibuffer))
 	     (evil-collection-init))
-(use-package evil-tutor)
+
+(use-package marginalia
+	     :init
+	     (marginalia-mode))
+
+(use-package company
+  :hook (after-init . global-company-mode))
+
+
+;; Language Servers
+(require 'eglot)
+;C/C++
+(add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)
